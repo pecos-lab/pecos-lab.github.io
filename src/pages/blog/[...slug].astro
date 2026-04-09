@@ -340,9 +340,11 @@ const readingTime = Math.max(1, Math.round(words / 200));
 
   .article-content :global(img) {
     max-width: 100%;
+    height: auto;
     border: 1px solid var(--border-2);
     display: block;
     margin: 2rem auto;
+    object-fit: contain;
   }
 
   .article-content :global(table) {
