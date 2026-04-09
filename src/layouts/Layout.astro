@@ -14,38 +14,38 @@ const { title = 'HOME' } = Astro.props;
     <title>{title} — PECOS LAB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <script is:inline>
-      // apply saved theme before paint to prevent flash
-      const saved = localStorage.getItem('theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', saved);
+      const t = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
     </script>
   </head>
   <body>
-    <div class="bg-orbs" aria-hidden="true">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
+    <div class="noise"></div>
 
     <header>
+      <div class="nav-top-bar"></div>
       <nav>
-        <a href="/" class="logo">pecos<span>lab</span></a>
+        <a href="/" class="logo">
+          PECOS<span class="logo-accent">LAB</span>
+          <span class="logo-dot"></span>
+        </a>
         <div class="nav-right">
           <ul>
-            <li><a href="/blog" class="nav-link">Blog</a></li>
+            <li><a href="/blog" class="nav-link">BLOG</a></li>
           </ul>
-          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
             <span class="icon-sun">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
                 <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
               </svg>
             </span>
             <span class="icon-moon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
               </svg>
             </span>
@@ -58,18 +58,24 @@ const { title = 'HOME' } = Astro.props;
 
     <footer>
       <div class="footer-inner">
-        <span class="footer-logo">pecos<span>lab</span></span>
-        <span class="footer-copy">© {new Date().getFullYear()} All rights reserved.</span>
+        <div class="footer-left">
+          <span class="footer-logo">PECOS<span>LAB</span></span>
+          <span class="footer-tagline">Built with precision.</span>
+        </div>
+        <div class="footer-right">
+          <span>© {new Date().getFullYear()}</span>
+          <span class="footer-sep">—</span>
+          <span>ALL RIGHTS RESERVED</span>
+        </div>
       </div>
     </footer>
   </body>
 </html>
 
 <script>
-  const toggle = document.getElementById('themeToggle')!;
-  const html   = document.documentElement;
-
-  toggle.addEventListener('click', () => {
+  const btn  = document.getElementById('themeToggle')!;
+  const html = document.documentElement;
+  btn.addEventListener('click', () => {
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
@@ -77,91 +83,59 @@ const { title = 'HOME' } = Astro.props;
 </script>
 
 <style is:global>
-  /* ══════════════════════════════
-     DARK THEME (default)
-  ══════════════════════════════ */
+  /* ══ FONTS (shared) ══ */
+  :root {
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  /* ══ DARK (default) ══ */
   :root,
   [data-theme="dark"] {
-    --blue:         #2997ff;
-    --blue-dim:     rgba(41, 151, 255, 0.10);
-    --blue-glow:    rgba(41, 151, 255, 0.18);
-    --purple:       #bf5af2;
-    --purple-dim:   rgba(191, 90, 242, 0.10);
-
-    --bg:           #000000;
-    --bg-2:         #0a0a0a;
-    --glass:        rgba(255, 255, 255, 0.03);
-    --glass-hover:  rgba(255, 255, 255, 0.06);
-    --border:       rgba(255, 255, 255, 0.07);
-    --border-2:     rgba(255, 255, 255, 0.12);
-
-    --text:         #f5f5f7;
-    --text-2:       #d1d1d6;
-    --sub:          #aeaeb2;
-    --muted:        #6e6e73;
-
-    --orb-1-color:  #0d2a55;
-    --orb-2-color:  #2a0d4a;
-    --orb-3-color:  #0a2a40;
-    --orb-opacity:  0.55;
-
-    --nav-bg:       rgba(0, 0, 0, 0.75);
-    --nav-blur:     12px;
-    --code-bg:      rgba(255, 255, 255, 0.05);
-    --code-color:   #e5c07b;
-    --pre-bg:       rgba(255, 255, 255, 0.03);
-
+    --red:       #D5001C;
+    --red-dim:   rgba(213, 0, 28, 0.15);
+    --bg:        #080808;
+    --card:      #141414;
+    --card-2:    #1a1a1a;
+    --border:    #1e1e1e;
+    --border-2:  #2a2a2a;
+    --muted:     #444444;
+    --silver:    #888888;
+    --light:     #bbbbbb;
+    --white:     #eeeeee;
+    --nav-bg:    rgba(8, 8, 8, 0.92);
     color-scheme: dark;
   }
 
-  /* ══════════════════════════════
-     LIGHT THEME
-  ══════════════════════════════ */
+  /* ══ LIGHT ══ */
   [data-theme="light"] {
-    --blue:         #0071e3;
-    --blue-dim:     rgba(0, 113, 227, 0.08);
-    --blue-glow:    rgba(0, 113, 227, 0.14);
-    --purple:       #8944ab;
-    --purple-dim:   rgba(137, 68, 171, 0.08);
-
-    --bg:           #f5f5f7;
-    --bg-2:         #ffffff;
-    --glass:        rgba(255, 255, 255, 0.55);
-    --glass-hover:  rgba(255, 255, 255, 0.80);
-    --border:       rgba(0, 0, 0, 0.06);
-    --border-2:     rgba(0, 0, 0, 0.10);
-
-    --text:         #1d1d1f;
-    --text-2:       #3a3a3c;
-    --sub:          #6e6e73;
-    --muted:        #8e8e93;
-
-    --orb-1-color:  #c5d8f5;
-    --orb-2-color:  #dac5f5;
-    --orb-3-color:  #c5e8f5;
-    --orb-opacity:  0.6;
-
-    --nav-bg:       rgba(245, 245, 247, 0.78);
-    --nav-blur:     12px;
-    --code-bg:      rgba(0, 0, 0, 0.04);
-    --code-color:   #8944ab;
-    --pre-bg:       rgba(0, 0, 0, 0.03);
-
+    --red:       #C0001A;
+    --red-dim:   rgba(192, 0, 26, 0.10);
+    --bg:        #f0f0ed;
+    --card:      #e8e8e5;
+    --card-2:    #ddddd9;
+    --border:    #d0d0cc;
+    --border-2:  #b8b8b4;
+    --muted:     #999994;
+    --silver:    #555550;
+    --light:     #333330;
+    --white:     #111110;
+    --nav-bg:    rgba(240, 240, 237, 0.92);
     color-scheme: light;
   }
 
-  /* ══════════════════════════════
-     BASE
-  ══════════════════════════════ */
+  /* ══ BASE ══ */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
     background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
-    transition: background 0.3s, color 0.3s;
+    scroll-behavior: smooth;
+    transition: background 0.25s, color 0.25s;
   }
 
   body {
@@ -169,170 +143,164 @@ const { title = 'HOME' } = Astro.props;
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow-x: hidden;
   }
 
   a { color: inherit; text-decoration: none; }
 
-  /* ══════════════════════════════
-     AMBIENT ORBS
-  ══════════════════════════════ */
-  .bg-orbs {
+  /* film grain */
+  .noise {
     position: fixed;
     inset: 0;
+    z-index: 9999;
     pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
   }
 
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: var(--orb-opacity);
-    transition: background 0.4s;
-  }
-
-  .orb-1 {
-    width: 650px; height: 650px;
-    top: -220px; left: -180px;
-    background: var(--orb-1-color);
-  }
-
-  .orb-2 {
-    width: 500px; height: 500px;
-    top: 25%; right: -160px;
-    background: var(--orb-2-color);
-  }
-
-  .orb-3 {
-    width: 400px; height: 400px;
-    bottom: 5%; left: 25%;
-    background: var(--orb-3-color);
-  }
-
-  /* ══════════════════════════════
-     HEADER
-  ══════════════════════════════ */
+  /* ── HEADER ── */
   header {
     position: sticky;
     top: 0;
     z-index: 200;
     background: var(--nav-bg);
-    backdrop-filter: blur(var(--nav-blur));
-    -webkit-backdrop-filter: blur(var(--nav-blur));
+    backdrop-filter: blur(16px) saturate(1.5);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
     border-bottom: 1px solid var(--border);
-    transition: background 0.3s, border-color 0.3s;
+    transition: background 0.25s, border-color 0.25s;
+  }
+
+  .nav-top-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--red) 0%, #ff2040 50%, var(--red) 100%);
   }
 
   nav {
-    max-width: 1080px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
-    height: 52px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
   .logo {
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    transition: color 0.2s;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
-  .logo span {
-    background: linear-gradient(135deg, var(--blue), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .logo-accent { color: var(--red); }
+
+  .logo-dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+    margin-bottom: 2px;
   }
 
   .nav-right {
     display: flex;
     align-items: center;
-    gap: 1.75rem;
+    gap: 2rem;
   }
 
-  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
 
   .nav-link {
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--silver);
+    position: relative;
+    padding-bottom: 2px;
     transition: color 0.2s;
   }
 
-  .nav-link:hover { color: var(--text); }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--red);
+    transition: width 0.3s ease;
+  }
 
-  /* ── theme toggle ── */
-  .theme-toggle {
-    width: 34px;
-    height: 34px;
+  .nav-link:hover { color: var(--white); }
+  .nav-link:hover::after { width: 100%; }
+
+  /* theme toggle */
+  .theme-btn {
+    width: 32px; height: 32px;
     border-radius: 50%;
     border: 1px solid var(--border-2);
-    background: var(--glass);
+    background: var(--card);
+    cursor: pointer;
+    color: var(--silver);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    color: var(--muted);
     transition: background 0.2s, color 0.2s, border-color 0.2s;
     flex-shrink: 0;
   }
 
-  .theme-toggle:hover {
-    background: var(--glass-hover);
-    color: var(--text);
-    border-color: var(--border-2);
-  }
+  .theme-btn:hover { background: var(--card-2); color: var(--white); }
 
-  [data-theme="dark"] .icon-sun  { display: flex; }
-  [data-theme="dark"] .icon-moon { display: none; }
+  [data-theme="dark"]  .icon-sun  { display: flex; }
+  [data-theme="dark"]  .icon-moon { display: none; }
   [data-theme="light"] .icon-sun  { display: none; }
   [data-theme="light"] .icon-moon { display: flex; }
 
-  /* ══════════════════════════════
-     FOOTER
-  ══════════════════════════════ */
+  /* ── FOOTER ── */
   footer {
     margin-top: auto;
     border-top: 1px solid var(--border);
-    padding: 2rem;
-    position: relative;
-    z-index: 1;
-    transition: border-color 0.3s;
+    padding: 2.5rem 2rem;
+    transition: border-color 0.25s;
   }
 
   .footer-inner {
-    max-width: 1080px;
+    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
   }
+
+  .footer-left { display: flex; align-items: center; gap: 1.5rem; }
 
   .footer-logo {
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
   }
 
-  .footer-logo span {
-    background: linear-gradient(135deg, var(--blue), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .footer-logo span { color: var(--red); }
 
-  .footer-copy {
-    font-size: 0.78rem;
+  .footer-tagline { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
     color: var(--muted);
   }
 
+  .footer-sep { color: var(--border-2); }
+
   @media (max-width: 600px) {
-    .footer-copy { display: none; }
+    .footer-right { display: none; }
   }
 </style>
