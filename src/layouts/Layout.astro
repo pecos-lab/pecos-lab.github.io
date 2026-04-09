@@ -109,7 +109,7 @@ const { title = 'HOME' } = Astro.props;
   }
 
   /* ══ LIGHT ══ */
-  [data-theme="light"] {
+  html[data-theme="light"] {
     --red:       #C0001A;
     --red-dim:   rgba(192, 0, 26, 0.10);
     --bg:        #f0f0ed;
@@ -253,10 +253,10 @@ const { title = 'HOME' } = Astro.props;
 
   .theme-btn:hover { background: var(--card-2); color: var(--white); }
 
-  [data-theme="dark"]  .icon-sun  { display: flex; }
-  [data-theme="dark"]  .icon-moon { display: none; }
-  [data-theme="light"] .icon-sun  { display: none; }
-  [data-theme="light"] .icon-moon { display: flex; }
+  html[data-theme="dark"]  .icon-sun  { display: flex; }
+  html[data-theme="dark"]  .icon-moon { display: none; }
+  html[data-theme="light"] .icon-sun  { display: none; }
+  html[data-theme="light"] .icon-moon { display: flex; }
 
   /* ── FOOTER ── */
   footer {
