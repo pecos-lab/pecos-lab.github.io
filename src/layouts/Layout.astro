@@ -14,20 +14,20 @@ const { title = 'HOME' } = Astro.props;
     <title>{title} — PECOS LAB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div class="noise"></div>
+    <div class="bg-orbs" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
 
     <header>
-      <div class="nav-top-bar"></div>
       <nav>
-        <a href="/" class="logo">
-          PECOS<span class="logo-accent">LAB</span>
-          <span class="logo-dot"></span>
-        </a>
+        <a href="/" class="logo">pecos<span>lab</span></a>
         <ul>
-          <li><a href="/blog" class="nav-link">BLOG</a></li>
+          <li><a href="/blog" class="nav-link">Blog</a></li>
         </ul>
       </nav>
     </header>
@@ -36,15 +36,8 @@ const { title = 'HOME' } = Astro.props;
 
     <footer>
       <div class="footer-inner">
-        <div class="footer-left">
-          <span class="footer-logo">PECOS<span>LAB</span></span>
-          <span class="footer-tagline">Built with precision.</span>
-        </div>
-        <div class="footer-right">
-          <span>© {new Date().getFullYear()}</span>
-          <span class="footer-sep">—</span>
-          <span>ALL RIGHTS RESERVED</span>
-        </div>
+        <span class="footer-logo">pecos<span>lab</span></span>
+        <span class="footer-copy">© {new Date().getFullYear()} All rights reserved.</span>
       </div>
     </footer>
   </body>
@@ -52,32 +45,30 @@ const { title = 'HOME' } = Astro.props;
 
 <style is:global>
   :root {
-    --red:     #D5001C;
-    --red-dim: rgba(213, 0, 28, 0.15);
-    --black:   #080808;
-    --dark:    #0f0f0f;
-    --card:    #141414;
-    --card-2:  #1a1a1a;
-    --border:  #1e1e1e;
-    --border-2:#2a2a2a;
-    --muted:   #444444;
-    --silver:  #888888;
-    --light:   #bbbbbb;
-    --white:   #eeeeee;
-    --font-head: 'Barlow Condensed', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --blue:       #2997ff;
+    --blue-dim:   rgba(41, 151, 255, 0.12);
+    --purple:     #bf5af2;
+    --bg:         #000000;
+    --glass:      rgba(255, 255, 255, 0.04);
+    --glass-hover:rgba(255, 255, 255, 0.07);
+    --border:     rgba(255, 255, 255, 0.08);
+    --border-2:   rgba(255, 255, 255, 0.12);
+    --muted:      #86868b;
+    --sub:        #a1a1a6;
+    --text:       #f5f5f7;
+    --font:       'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono:       'JetBrains Mono', monospace;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    background: var(--black);
-    color: var(--white);
-    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -85,145 +76,123 @@ const { title = 'HOME' } = Astro.props;
     display: flex;
     flex-direction: column;
     position: relative;
-  }
-
-  /* subtle film grain */
-  .noise {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
+    overflow-x: hidden;
   }
 
   a { color: inherit; text-decoration: none; }
 
-  /* ─── HEADER ─── */
+  /* ── ambient orbs ── */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+  }
+
+  .orb-1 {
+    width: 600px; height: 600px;
+    top: -200px; left: -150px;
+    background: radial-gradient(circle, #1a3a6b 0%, transparent 70%);
+  }
+
+  .orb-2 {
+    width: 500px; height: 500px;
+    top: 30%; right: -150px;
+    background: radial-gradient(circle, #3a1a6b 0%, transparent 70%);
+  }
+
+  .orb-3 {
+    width: 400px; height: 400px;
+    bottom: 10%; left: 30%;
+    background: radial-gradient(circle, #1a4a6b 0%, transparent 70%);
+  }
+
+  /* ── header ── */
   header {
     position: sticky;
     top: 0;
     z-index: 200;
-    background: rgba(8, 8, 8, 0.92);
-    backdrop-filter: blur(20px) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
     border-bottom: 1px solid var(--border);
   }
 
-  .nav-top-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--red) 0%, #ff2040 50%, var(--red) 100%);
-  }
-
   nav {
-    max-width: 1280px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 0 2rem;
-    height: 60px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
   .logo {
-    font-family: var(--font-head);
-    font-size: 1.35rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
 
-  .logo-accent { color: var(--red); }
-
-  .logo-dot {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--red);
-    margin-bottom: 2px;
+  .logo span {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
 
   .nav-link {
-    font-family: var(--font-head);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    color: var(--silver);
-    position: relative;
-    padding-bottom: 2px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--muted);
     transition: color 0.2s;
   }
 
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--red);
-    transition: width 0.3s ease;
-  }
+  .nav-link:hover { color: var(--text); }
 
-  .nav-link:hover { color: var(--white); }
-  .nav-link:hover::after { width: 100%; }
-
-  /* ─── FOOTER ─── */
+  /* ── footer ── */
   footer {
     margin-top: auto;
     border-top: 1px solid var(--border);
-    padding: 2.5rem 2rem;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
   }
 
   .footer-inner {
-    max-width: 1280px;
+    max-width: 1080px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .footer-left {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
   }
 
   .footer-logo {
-    font-family: var(--font-head);
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
-  .footer-logo span { color: var(--red); }
+  .footer-logo span {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-  .footer-tagline {
-    font-size: 0.75rem;
+  .footer-copy {
+    font-size: 0.8rem;
     color: var(--muted);
-    font-style: italic;
-  }
-
-  .footer-right {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-head);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-  }
-
-  .footer-sep { color: var(--border-2); }
-
-  @media (max-width: 600px) {
-    .footer-right { display: none; }
   }
 </style>

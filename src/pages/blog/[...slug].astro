@@ -12,403 +12,312 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
-const words = (post.body ?? '').trim().split(/\s+/).length;
-const readingTime = Math.max(1, Math.round(words / 200));
+const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/).length / 200));
 ---
 
 <Layout title={post.data.title}>
-  <!-- reading progress bar -->
   <div class="progress-bar" id="progress"></div>
 
   <main>
-    <!-- ─── HERO ─── -->
+    <!-- ── HERO ── -->
     <section class="article-hero">
-      <div class="hero-glow"></div>
       <div class="hero-inner">
-        <a href="/blog" class="back-link">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M11 7H3M3 7L7 3M3 7L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          BACK TO BLOG
-        </a>
+        <a href="/blog" class="back">← Blog</a>
 
-        <div class="article-meta">
+        <div class="meta">
           <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
           <span class="meta-sep">·</span>
-          <span class="reading-time">{readingTime} MIN READ</span>
-          {post.data.tags && post.data.tags.map(tag => (
-            <span class="meta-sep">·</span>
-            <span class="tag">{tag}</span>
+          <span>{readingTime} min read</span>
+          {post.data.tags?.map(t => (
+            <>
+              <span class="meta-sep">·</span>
+              <span class="tag">{t}</span>
+            </>
           ))}
         </div>
 
-        <h1 class="article-title">{post.data.title}</h1>
+        <h1>{post.data.title}</h1>
 
         {post.data.description && (
           <p class="article-desc">{post.data.description}</p>
         )}
       </div>
-      <div class="hero-left-stripe"></div>
     </section>
 
-    <!-- ─── CONTENT ─── -->
+    <!-- ── CONTENT ── -->
     <div class="article-wrap">
-      <div class="article-line"></div>
-      <article class="article-content">
+      <article class="prose">
         <Content />
       </article>
     </div>
 
-    <!-- ─── FOOTER NAV ─── -->
-    <div class="article-footer">
-      <div class="footer-inner">
-        <a href="/blog" class="footer-back">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          ALL POSTS
-        </a>
-        <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-          TOP ↑
-        </button>
-      </div>
+    <!-- ── BOTTOM NAV ── -->
+    <div class="article-nav">
+      <a href="/blog" class="nav-back">← All articles</a>
+      <button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</button>
     </div>
   </main>
 </Layout>
 
 <script>
-  const bar = document.getElementById('progress');
-  const onScroll = () => {
-    const doc = document.documentElement;
-    const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
-    if (bar) bar.style.width = pct + '%';
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
+  const bar = document.getElementById('progress') as HTMLElement;
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    bar.style.width = (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+  }, { passive: true });
 </script>
 
 <style>
-  /* ─── PROGRESS BAR ─── */
+  /* ── progress ── */
   .progress-bar {
     position: fixed;
-    top: 63px;
-    left: 0;
-    width: 0%;
+    top: 52px; left: 0;
+    width: 0;
     height: 2px;
-    background: var(--red);
+    background: linear-gradient(90deg, var(--blue), var(--purple));
     z-index: 300;
     transition: width 0.05s linear;
   }
 
-  /* ─── HERO ─── */
+  main { position: relative; z-index: 1; }
+
+  /* ── hero ── */
   .article-hero {
-    position: relative;
-    border-bottom: 1px solid var(--border);
     padding: 5rem 2rem 4rem;
-    overflow: hidden;
-  }
-
-  .hero-glow {
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(213, 0, 28, 0.08) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
-  .hero-left-stripe {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: linear-gradient(to bottom, var(--red), transparent);
+    border-bottom: 1px solid var(--border);
   }
 
   .hero-inner {
-    max-width: 800px;
+    max-width: 720px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    margin-bottom: 2.5rem;
-    transition: color 0.2s, gap 0.2s;
+  .back {
+    font-size: 0.85rem;
+    color: var(--blue);
+    width: fit-content;
+    transition: opacity 0.2s;
   }
 
-  .back-link:hover {
-    color: var(--red);
-    gap: 0.75rem;
-  }
+  .back:hover { opacity: 0.7; }
 
-  .article-meta {
+  .meta {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .article-meta time,
-  .reading-time {
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
     color: var(--muted);
   }
 
-  .meta-sep { color: var(--border-2); font-size: 0.8rem; }
+  .meta-sep { color: var(--border-2); }
 
   .tag {
-    font-family: var(--font-head);
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    color: var(--red);
-    border: 1px solid rgba(213, 0, 28, 0.4);
-    padding: 0.1rem 0.5rem;
+    color: var(--blue);
+    background: var(--blue-dim);
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
   }
 
-  .article-title {
-    font-family: var(--font-head);
-    font-size: clamp(2.25rem, 5vw, 4rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 1.25rem;
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    color: var(--text);
   }
 
   .article-desc {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--silver);
-    border-left: 3px solid var(--red);
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
     padding-left: 1.25rem;
+    border-left: 2px solid;
+    border-image: linear-gradient(to bottom, var(--blue), var(--purple)) 1;
   }
 
-  /* ─── CONTENT ─── */
+  /* ── content ── */
   .article-wrap {
-    max-width: 800px;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .prose {
+    max-width: 720px;
     margin: 0 auto;
-    padding: 4rem 2rem 5rem;
-    position: relative;
   }
 
-  .article-line {
-    position: absolute;
-    left: 2rem;
-    top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--border), transparent 80%);
-    pointer-events: none;
-  }
-
-  /* ─── MARKDOWN ─── */
-  .article-content :global(h1),
-  .article-content :global(h2),
-  .article-content :global(h3),
-  .article-content :global(h4) {
-    font-family: var(--font-head);
-    font-weight: 700;
-    line-height: 1.15;
-    color: var(--white);
-    margin: 3rem 0 1rem;
-    letter-spacing: -0.01em;
-  }
-
-  .article-content :global(h1) { font-size: 2.25rem; }
-  .article-content :global(h2) {
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .article-content :global(h2)::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 1.1em;
-    background: var(--red);
-    flex-shrink: 0;
-  }
-  .article-content :global(h3) { font-size: 1.4rem; color: var(--light); }
-
-  .article-content :global(p) {
-    font-size: 1rem;
-    line-height: 1.85;
-    color: #b8b8b8;
-    margin: 1.4rem 0;
-  }
-
-  .article-content :global(strong) {
-    color: var(--white);
+  /* ── markdown ── */
+  .prose :global(h1),
+  .prose :global(h2),
+  .prose :global(h3),
+  .prose :global(h4) {
     font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    color: var(--text);
+    margin: 2.5rem 0 0.75rem;
   }
 
-  .article-content :global(em) { color: var(--light); }
+  .prose :global(h2) { font-size: 1.6rem; }
+  .prose :global(h3) { font-size: 1.3rem; color: #d1d1d6; }
 
-  .article-content :global(a) {
-    color: var(--red);
+  .prose :global(p) {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #aeaeb2;
+    margin: 1.25rem 0;
+    font-weight: 300;
+  }
+
+  .prose :global(strong) { color: var(--text); font-weight: 600; }
+
+  .prose :global(a) {
+    color: var(--blue);
     text-decoration: underline;
-    text-decoration-color: rgba(213, 0, 28, 0.4);
+    text-decoration-color: rgba(41, 151, 255, 0.35);
     text-underline-offset: 3px;
     transition: text-decoration-color 0.2s;
   }
 
-  .article-content :global(a:hover) {
-    text-decoration-color: var(--red);
-  }
+  .prose :global(a:hover) { text-decoration-color: var(--blue); }
 
-  .article-content :global(code) {
-    font-family: var(--font-mono);
-    font-size: 0.82em;
-    background: var(--card-2);
-    border: 1px solid var(--border-2);
+  .prose :global(code) {
+    font-family: var(--mono);
+    font-size: 0.83em;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
     padding: 0.15em 0.45em;
-    color: #ff6b7a;
-    border-radius: 2px;
+    border-radius: 5px;
+    color: #e5c07b;
   }
 
-  .article-content :global(pre) {
-    background: var(--card);
-    border: 1px solid var(--border-2);
-    border-left: 3px solid var(--red);
-    padding: 1.75rem;
+  .prose :global(pre) {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
     overflow-x: auto;
     margin: 2rem 0;
-    position: relative;
+    backdrop-filter: blur(8px);
   }
 
-  .article-content :global(pre code) {
-    font-family: var(--font-mono);
+  .prose :global(pre code) {
+    font-family: var(--mono);
     background: none;
     border: none;
     padding: 0;
-    color: #d4d4d4;
-    font-size: 0.875rem;
+    color: #abb2bf;
+    font-size: 0.9rem;
     line-height: 1.7;
   }
 
-  .article-content :global(ul),
-  .article-content :global(ol) {
+  .prose :global(ul),
+  .prose :global(ol) {
     padding-left: 1.5rem;
     margin: 1.25rem 0;
   }
 
-  .article-content :global(li) {
-    color: #b8b8b8;
+  .prose :global(li) {
+    color: #aeaeb2;
     line-height: 1.8;
-    margin: 0.4rem 0;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    margin: 0.3rem 0;
+    font-weight: 300;
   }
 
-  .article-content :global(ul li::marker) { color: var(--red); }
-  .article-content :global(ol li::marker) {
-    font-family: var(--font-head);
-    color: var(--muted);
-    font-size: 0.85em;
-  }
-
-  .article-content :global(blockquote) {
-    border-left: 3px solid var(--red);
+  .prose :global(blockquote) {
+    margin: 2rem 0;
     padding: 1.25rem 1.5rem;
-    background: var(--card);
-    margin: 2.5rem 0;
-    position: relative;
+    background: var(--glass);
+    border-radius: 10px;
+    border-left: 2px solid;
+    border-image: linear-gradient(to bottom, var(--blue), var(--purple)) 1;
+    backdrop-filter: blur(8px);
   }
 
-  .article-content :global(blockquote p) {
-    color: var(--silver);
+  .prose :global(blockquote p) {
+    color: var(--sub);
     font-style: italic;
     margin: 0;
   }
 
-  .article-content :global(hr) {
+  .prose :global(hr) {
     border: none;
     height: 1px;
-    background: linear-gradient(90deg, var(--red), var(--border), transparent);
-    margin: 3.5rem 0;
+    background: linear-gradient(90deg, transparent, var(--border-2), transparent);
+    margin: 3rem 0;
   }
 
-  .article-content :global(img) {
+  .prose :global(img) {
     max-width: 100%;
-    border: 1px solid var(--border-2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
     display: block;
     margin: 2rem auto;
   }
 
-  .article-content :global(table) {
+  .prose :global(table) {
     width: 100%;
     border-collapse: collapse;
-    margin: 2.5rem 0;
+    margin: 2rem 0;
     font-size: 0.9rem;
   }
 
-  .article-content :global(th) {
-    font-family: var(--font-head);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
+  .prose :global(th) {
     text-align: left;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--red);
-    color: var(--silver);
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border-2);
+    color: var(--sub);
+    font-weight: 500;
+    font-size: 0.8rem;
   }
 
-  .article-content :global(td) {
-    padding: 0.75rem 1rem;
+  .prose :global(td) {
+    padding: 0.65rem 1rem;
     border-bottom: 1px solid var(--border);
-    color: #b8b8b8;
+    color: #aeaeb2;
+    font-weight: 300;
     line-height: 1.6;
   }
 
-  .article-content :global(tr:hover td) { background: var(--card); }
+  .prose :global(tr:hover td) { background: var(--glass); }
 
-  /* ─── ARTICLE FOOTER ─── */
-  .article-footer {
+  /* ── article nav ── */
+  .article-nav {
     border-top: 1px solid var(--border);
     padding: 1.5rem 2rem;
-  }
-
-  .footer-inner {
-    max-width: 800px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 720px;
+    margin: 0 auto;
   }
 
-  .footer-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    transition: color 0.2s, gap 0.2s;
+  .nav-back {
+    font-size: 0.85rem;
+    color: var(--blue);
+    transition: opacity 0.2s;
   }
 
-  .footer-back:hover { color: var(--red); gap: 0.9rem; }
+  .nav-back:hover { opacity: 0.7; }
 
-  .back-top {
-    font-family: var(--font-head);
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
+  #topBtn {
+    font-size: 0.8rem;
     color: var(--muted);
-    background: none;
-    border: 1px solid var(--border-2);
+    background: var(--glass);
+    border: 1px solid var(--border);
     padding: 0.4rem 0.9rem;
+    border-radius: 999px;
     cursor: pointer;
+    font-family: var(--font);
     transition: color 0.2s, border-color 0.2s;
+    backdrop-filter: blur(8px);
   }
 
-  .back-top:hover { color: var(--white); border-color: var(--silver); }
+  #topBtn:hover { color: var(--text); border-color: var(--border-2); }
 </style>
