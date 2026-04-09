@@ -15,26 +15,235 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title}>
-  <article>
-    <h1>{post.data.title}</h1>
-    <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
-    {post.data.description && <p class="desc">{post.data.description}</p>}
-    <Content />
-  </article>
+  <main>
+    <div class="hero">
+      <div class="inner">
+        <a href="/blog" class="back">← BACK</a>
+        <div class="meta">
+          <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
+          {post.data.tags && post.data.tags.map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+        <h1>{post.data.title}</h1>
+        {post.data.description && <p class="desc">{post.data.description}</p>}
+      </div>
+      <div class="stripe"></div>
+    </div>
+
+    <article>
+      <div class="inner">
+        <Content />
+      </div>
+    </article>
+  </main>
 </Layout>
 
 <style>
-  article {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+  .hero {
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    padding: 4rem 0 3rem;
+    overflow: hidden;
   }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 50% 100% at 100% 50%, rgba(213, 0, 28, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .stripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--red);
+  }
+
+  .inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .back {
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    display: inline-block;
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+  }
+
+  .back:hover {
+    color: var(--red);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
   time {
-    color: #888;
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .tag {
+    font-family: var(--font-head);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 0.15rem 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .desc {
+    font-size: 1.1rem;
+    color: var(--silver);
+    line-height: 1.6;
+  }
+
+  article {
+    padding: 4rem 0 6rem;
+  }
+
+  /* Markdown content styles */
+  article :global(h1),
+  article :global(h2),
+  article :global(h3),
+  article :global(h4) {
+    font-family: var(--font-head);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--white);
+    margin: 2.5rem 0 1rem;
+  }
+
+  article :global(h2) { font-size: 2rem; }
+  article :global(h3) { font-size: 1.5rem; }
+
+  article :global(h2)::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 1em;
+    background: var(--red);
+    margin-right: 0.75rem;
+    vertical-align: middle;
+  }
+
+  article :global(p) {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #c8c8c8;
+    margin: 1.25rem 0;
+  }
+
+  article :global(a) {
+    color: var(--red);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  article :global(code) {
+    font-family: 'Courier New', monospace;
+    font-size: 0.875em;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 0.2em 0.5em;
+    color: var(--red);
+  }
+
+  article :global(pre) {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin: 2rem 0;
+  }
+
+  article :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--white);
+    font-size: 0.875rem;
+  }
+
+  article :global(ul),
+  article :global(ol) {
+    padding-left: 1.5rem;
+    color: #c8c8c8;
+    line-height: 1.8;
+    margin: 1rem 0;
+  }
+
+  article :global(li) {
+    margin: 0.4rem 0;
+  }
+
+  article :global(blockquote) {
+    border-left: 3px solid var(--red);
+    padding: 1rem 1.5rem;
+    background: var(--card);
+    margin: 2rem 0;
+    color: var(--silver);
+    font-style: italic;
+  }
+
+  article :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  article :global(img) {
+    max-width: 100%;
+    border: 1px solid var(--border);
+  }
+
+  article :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
     font-size: 0.9rem;
   }
-  .desc {
-    color: #555;
-    font-style: italic;
+
+  article :global(th) {
+    font-family: var(--font-head);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--red);
+    color: var(--silver);
+  }
+
+  article :global(td) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: #c8c8c8;
   }
 </style>
