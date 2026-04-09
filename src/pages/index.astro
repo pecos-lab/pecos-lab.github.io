@@ -20,7 +20,7 @@ const posts = allPosts.slice(0, 3);
           <span class="gradient-text">craft.</span>
         </h1>
         <p class="hero-sub">
-          Engineering deep dives, sharp opinions, and things I wish I'd known earlier.
+          Engineering deep dives, sharp opinions,<br />and things I wish I'd known earlier.
         </p>
         <div class="hero-actions">
           <a href="/blog" class="btn-primary">Read the blog</a>
@@ -39,7 +39,7 @@ const posts = allPosts.slice(0, 3);
       </div>
     </section>
 
-    <!-- ══ RECENT POSTS ══ -->
+    <!-- ══ RECENT ══ -->
     {posts.length > 0 && (
       <section class="recent">
         <div class="section-inner">
@@ -94,13 +94,12 @@ const posts = allPosts.slice(0, 3);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 1rem;
+    padding: 0.3rem 1rem;
     background: var(--glass);
     border: 1px solid var(--border-2);
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--sub);
-    backdrop-filter: blur(8px);
   }
 
   .hero-badge::before {
@@ -108,7 +107,7 @@ const posts = allPosts.slice(0, 3);
     width: 6px; height: 6px;
     border-radius: 50%;
     background: var(--blue);
-    box-shadow: 0 0 8px var(--blue);
+    box-shadow: 0 0 10px var(--blue-glow), 0 0 20px var(--blue-glow);
   }
 
   .hero-title {
@@ -127,11 +126,10 @@ const posts = allPosts.slice(0, 3);
   }
 
   .hero-sub {
-    font-size: 1.1rem;
-    line-height: 1.65;
+    font-size: 1.05rem;
+    line-height: 1.7;
     color: var(--muted);
     font-weight: 300;
-    max-width: 480px;
   }
 
   .hero-actions { display: flex; gap: 1rem; }
@@ -139,27 +137,31 @@ const posts = allPosts.slice(0, 3);
   .btn-primary {
     display: inline-flex;
     align-items: center;
-    padding: 0.75rem 1.75rem;
+    padding: 0.72rem 1.75rem;
     background: var(--blue);
     color: #fff;
     font-size: 0.9rem;
     font-weight: 500;
     border-radius: 980px;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 0 0 rgba(41, 151, 255, 0);
+    transition: filter 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 0 transparent;
   }
 
   .btn-primary:hover {
-    background: #0a84ff;
+    filter: brightness(1.1);
     transform: scale(1.02);
-    box-shadow: 0 0 24px rgba(41, 151, 255, 0.35);
+    box-shadow: 0 0 28px var(--blue-glow), 0 0 60px var(--blue-dim);
   }
 
   .hero-stats {
     display: flex;
     align-items: center;
     gap: 2rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    padding: 1.25rem 2.5rem;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
   }
 
   .stat {
@@ -170,28 +172,26 @@ const posts = allPosts.slice(0, 3);
   }
 
   .stat-num {
-    font-size: 1.75rem;
+    font-size: 1.6rem;
     font-weight: 600;
     letter-spacing: -0.03em;
     color: var(--text);
   }
 
   .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--muted);
     font-weight: 300;
   }
 
   .stat-sep {
     width: 1px;
-    height: 2.5rem;
-    background: var(--border);
+    height: 2.25rem;
+    background: var(--border-2);
   }
 
   /* ── RECENT ── */
-  .recent {
-    padding: 5rem 2rem 8rem;
-  }
+  .recent { padding: 4rem 2rem 8rem; }
 
   .section-inner {
     max-width: 1080px;
@@ -202,22 +202,23 @@ const posts = allPosts.slice(0, 3);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .section-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.03em;
+    color: var(--text);
   }
 
   .section-all {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--blue);
     transition: opacity 0.2s;
   }
 
-  .section-all:hover { opacity: 0.75; }
+  .section-all:hover { opacity: 0.7; }
 
   .cards {
     display: grid;
@@ -232,14 +233,15 @@ const posts = allPosts.slice(0, 3);
   .card {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 2rem;
+    gap: 0.7rem;
+    padding: 1.75rem;
     background: var(--glass);
-    backdrop-filter: blur(12px);
-    transition: background 0.25s;
+    transition: background 0.2s;
   }
 
-  .card:hover { background: var(--glass-hover); }
+  .card:hover {
+    background: var(--glass-hover);
+  }
 
   .card:hover .card-cta { color: var(--blue); }
 
@@ -251,20 +253,20 @@ const posts = allPosts.slice(0, 3);
   }
 
   .card-meta time {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--muted);
   }
 
   .tag {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--blue);
     background: var(--blue-dim);
-    padding: 0.1rem 0.6rem;
+    padding: 0.1rem 0.55rem;
     border-radius: 999px;
   }
 
   .card-title {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.3;

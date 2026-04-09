@@ -23,7 +23,6 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
     <section class="article-hero">
       <div class="hero-inner">
         <a href="/blog" class="back">← Blog</a>
-
         <div class="meta">
           <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
           <span class="meta-sep">·</span>
@@ -35,9 +34,7 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
             </>
           ))}
         </div>
-
         <h1>{post.data.title}</h1>
-
         {post.data.description && (
           <p class="article-desc">{post.data.description}</p>
         )}
@@ -77,6 +74,7 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
     background: linear-gradient(90deg, var(--blue), var(--purple));
     z-index: 300;
     transition: width 0.05s linear;
+    box-shadow: 0 0 12px var(--blue-glow);
   }
 
   main { position: relative; z-index: 1; }
@@ -92,7 +90,7 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.1rem;
   }
 
   .back {
@@ -109,7 +107,7 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted);
   }
 
@@ -118,9 +116,9 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   .tag {
     color: var(--blue);
     background: var(--blue-dim);
-    padding: 0.1rem 0.6rem;
+    padding: 0.1rem 0.55rem;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
   }
 
   h1 {
@@ -132,12 +130,12 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   }
 
   .article-desc {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--muted);
     line-height: 1.65;
     font-weight: 300;
-    padding-left: 1.25rem;
-    border-left: 2px solid;
+    padding-left: 1.1rem;
+    border-left: 2px solid transparent;
     border-image: linear-gradient(to bottom, var(--blue), var(--purple)) 1;
   }
 
@@ -164,13 +162,13 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   }
 
   .prose :global(h2) { font-size: 1.6rem; }
-  .prose :global(h3) { font-size: 1.3rem; color: #d1d1d6; }
+  .prose :global(h3) { font-size: 1.3rem; color: var(--text-2); }
 
   .prose :global(p) {
     font-size: 1.05rem;
-    line-height: 1.8;
-    color: #aeaeb2;
-    margin: 1.25rem 0;
+    line-height: 1.82;
+    color: var(--sub);
+    margin: 1.2rem 0;
     font-weight: 300;
   }
 
@@ -179,7 +177,7 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   .prose :global(a) {
     color: var(--blue);
     text-decoration: underline;
-    text-decoration-color: rgba(41, 151, 255, 0.35);
+    text-decoration-color: var(--blue-dim);
     text-underline-offset: 3px;
     transition: text-decoration-color 0.2s;
   }
@@ -187,32 +185,31 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   .prose :global(a:hover) { text-decoration-color: var(--blue); }
 
   .prose :global(code) {
-    font-family: var(--mono);
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.83em;
-    background: rgba(255,255,255,0.06);
+    background: var(--code-bg);
     border: 1px solid var(--border);
     padding: 0.15em 0.45em;
     border-radius: 5px;
-    color: #e5c07b;
+    color: var(--code-color);
   }
 
   .prose :global(pre) {
-    background: rgba(255,255,255,0.03);
+    background: var(--pre-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 1.5rem;
     overflow-x: auto;
     margin: 2rem 0;
-    backdrop-filter: blur(8px);
   }
 
   .prose :global(pre code) {
-    font-family: var(--mono);
+    font-family: 'JetBrains Mono', monospace;
     background: none;
     border: none;
     padding: 0;
-    color: #abb2bf;
-    font-size: 0.9rem;
+    color: var(--text-2);
+    font-size: 0.875rem;
     line-height: 1.7;
   }
 
@@ -223,21 +220,22 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   }
 
   .prose :global(li) {
-    color: #aeaeb2;
+    color: var(--sub);
     line-height: 1.8;
     font-size: 1.05rem;
     margin: 0.3rem 0;
     font-weight: 300;
   }
 
+  .prose :global(ul li::marker) { color: var(--blue); }
+
   .prose :global(blockquote) {
     margin: 2rem 0;
     padding: 1.25rem 1.5rem;
     background: var(--glass);
     border-radius: 10px;
-    border-left: 2px solid;
+    border-left: 2px solid transparent;
     border-image: linear-gradient(to bottom, var(--blue), var(--purple)) 1;
-    backdrop-filter: blur(8px);
   }
 
   .prose :global(blockquote p) {
@@ -280,14 +278,14 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   .prose :global(td) {
     padding: 0.65rem 1rem;
     border-bottom: 1px solid var(--border);
-    color: #aeaeb2;
+    color: var(--sub);
     font-weight: 300;
     line-height: 1.6;
   }
 
   .prose :global(tr:hover td) { background: var(--glass); }
 
-  /* ── article nav ── */
+  /* ── bottom nav ── */
   .article-nav {
     border-top: 1px solid var(--border);
     padding: 1.5rem 2rem;
@@ -307,17 +305,20 @@ const readingTime = Math.max(1, Math.round((post.body ?? '').trim().split(/\s+/)
   .nav-back:hover { opacity: 0.7; }
 
   #topBtn {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted);
     background: var(--glass);
     border: 1px solid var(--border);
     padding: 0.4rem 0.9rem;
     border-radius: 999px;
     cursor: pointer;
-    font-family: var(--font);
-    transition: color 0.2s, border-color 0.2s;
-    backdrop-filter: blur(8px);
+    font-family: inherit;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
 
-  #topBtn:hover { color: var(--text); border-color: var(--border-2); }
+  #topBtn:hover {
+    color: var(--text);
+    border-color: var(--border-2);
+    background: var(--glass-hover);
+  }
 </style>
