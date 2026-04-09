@@ -2,267 +2,387 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const allPosts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const posts = allPosts.slice(0, 3);
 ---
 
 <Layout title="HOME">
   <main>
-    <!-- HERO -->
+
+    <!-- ═══ HERO ═══ -->
     <section class="hero">
+      <div class="hero-grid-overlay"></div>
+      <div class="hero-glow"></div>
+
       <div class="hero-inner">
-        <div class="hero-eyebrow">DEVELOPER BLOG</div>
+        <div class="hero-spec-row">
+          <span class="spec-item"><span class="spec-label">ORIGIN</span><span class="spec-value">KOREA</span></span>
+          <span class="spec-divider">|</span>
+          <span class="spec-item"><span class="spec-label">TYPE</span><span class="spec-value">DEV BLOG</span></span>
+          <span class="spec-divider">|</span>
+          <span class="spec-item"><span class="spec-label">POSTS</span><span class="spec-value">{String(allPosts.length).padStart(2,'0')}</span></span>
+        </div>
+
         <h1 class="hero-title">
-          PECOS<br /><span>LAB</span>
+          <span class="title-line-1">PECOS</span>
+          <span class="title-line-2">LAB<span class="title-dot">.</span></span>
         </h1>
-        <p class="hero-sub">Engineering notes. Deep dives. Built to last.</p>
-        <a href="/blog" class="btn-primary">VIEW ALL POSTS</a>
+
+        <p class="hero-sub">
+          Engineering notes. Sharp opinions.<br />Code that actually ships.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/blog" class="btn-primary">
+            <span>VIEW ALL POSTS</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </div>
-      <div class="hero-stripe"></div>
+
+      <div class="hero-side-label">
+        <span>DEVELOPER · ENGINEER · BUILDER</span>
+      </div>
     </section>
 
-    <!-- RECENT POSTS -->
+    <!-- ═══ DIVIDER ═══ -->
+    <div class="section-divider">
+      <div class="divider-inner">
+        <span class="divider-label">LATEST POSTS</span>
+        <div class="divider-line"></div>
+        <a href="/blog" class="divider-link">ALL →</a>
+      </div>
+    </div>
+
+    <!-- ═══ POSTS ═══ -->
     {posts.length > 0 && (
-      <section class="recent">
-        <div class="section-inner">
-          <div class="section-header">
-            <span class="section-label">LATEST</span>
-            <a href="/blog" class="section-link">ALL POSTS →</a>
-          </div>
-          <div class="post-grid">
-            {posts.map((post, i) => (
-              <a href={`/blog/${post.id}`} class={`post-card ${i === 0 ? 'featured' : ''}`}>
-                <div class="card-inner">
-                  <div class="card-meta">
-                    <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
-                    {post.data.tags && post.data.tags.length > 0 && (
-                      <span class="tag">{post.data.tags[0]}</span>
-                    )}
-                  </div>
-                  <h2 class="card-title">{post.data.title}</h2>
-                  {post.data.description && (
-                    <p class="card-desc">{post.data.description}</p>
-                  )}
-                  <span class="card-cta">READ MORE →</span>
+      <section class="posts">
+        <div class="posts-inner">
+          {posts.map((post, i) => (
+            <a href={`/blog/${post.id}`} class="post-card">
+              <div class="card-number">{String(i + 1).padStart(2, '0')}</div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
+                  {post.data.tags?.map(tag => <span class="tag">{tag}</span>)}
                 </div>
-              </a>
-            ))}
-          </div>
+                <h2 class="card-title">{post.data.title}</h2>
+                {post.data.description && <p class="card-desc">{post.data.description}</p>}
+              </div>
+              <div class="card-arrow">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16M16 10L10 4M16 10L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          ))}
         </div>
       </section>
     )}
+
   </main>
 </Layout>
 
 <style>
-  /* HERO */
+  /* ─── HERO ─── */
   .hero {
     position: relative;
-    min-height: 90vh;
+    min-height: calc(100vh - 63px);
     display: flex;
     align-items: center;
-    overflow: hidden;
     border-bottom: 1px solid var(--border);
+    overflow: hidden;
   }
 
-  .hero::before {
-    content: '';
+  .hero-grid-overlay {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(ellipse 60% 60% at 80% 50%, rgba(213, 0, 28, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 80% at 10% 50%, rgba(213, 0, 28, 0.04) 0%, transparent 70%);
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    right: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(213, 0, 28, 0.12) 0%, transparent 65%);
     pointer-events: none;
   }
 
   .hero-inner {
     position: relative;
     z-index: 1;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 6rem 2rem;
     width: 100%;
   }
 
-  .hero-eyebrow {
+  .hero-spec-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .spec-label {
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+  }
+
+  .spec-value {
     font-family: var(--font-head);
     font-size: 0.85rem;
-    letter-spacing: 0.3em;
-    color: var(--red);
-    margin-bottom: 1.5rem;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: var(--light);
+  }
+
+  .spec-divider {
+    color: var(--border-2);
+    font-size: 1.2rem;
+    margin-top: 4px;
   }
 
   .hero-title {
     font-family: var(--font-head);
-    font-size: clamp(6rem, 18vw, 14rem);
     font-weight: 800;
-    line-height: 0.9;
+    line-height: 0.88;
     letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
   }
 
-  .hero-title span {
-    color: var(--red);
-    -webkit-text-stroke: 2px var(--red);
+  .title-line-1 {
+    font-size: clamp(5rem, 16vw, 13rem);
+    color: var(--white);
+  }
+
+  .title-line-2 {
+    font-size: clamp(5rem, 16vw, 13rem);
     color: transparent;
+    -webkit-text-stroke: 2px var(--border-2);
+    transition: -webkit-text-stroke-color 0.3s;
+  }
+
+  .title-dot {
+    color: var(--red);
+    -webkit-text-stroke: 0;
+  }
+
+  .hero:hover .title-line-2 {
+    -webkit-text-stroke-color: var(--muted);
   }
 
   .hero-sub {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--silver);
     margin-bottom: 3rem;
-    max-width: 400px;
-    line-height: 1.6;
+    max-width: 380px;
   }
 
+  .hero-actions { display: flex; gap: 1rem; }
+
   .btn-primary {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
     font-family: var(--font-head);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.2em;
-    padding: 1rem 2.5rem;
+    padding: 0.9rem 2rem;
     background: var(--red);
     color: #fff;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, gap 0.2s, transform 0.2s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
   }
 
   .btn-primary:hover {
-    background: #ff0021;
-    transform: translateY(-2px);
+    background: #e8001f;
+    gap: 1.25rem;
+    transform: translateY(-1px);
   }
 
-  .hero-stripe {
+  .hero-side-label {
     position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    background: var(--red);
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center center;
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--muted);
+    white-space: nowrap;
+    user-select: none;
   }
 
-  /* RECENT */
-  .recent {
-    padding: 6rem 0;
-  }
-
-  .section-inner {
-    max-width: 1200px;
-    margin: 0 auto;
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    border-bottom: 1px solid var(--border);
     padding: 0 2rem;
   }
 
-  .section-header {
+  .divider-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 52px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 3rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+    gap: 1.5rem;
   }
 
-  .section-label {
+  .divider-label {
     font-family: var(--font-head);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     letter-spacing: 0.3em;
     color: var(--red);
+    white-space: nowrap;
   }
 
-  .section-link {
-    font-family: var(--font-head);
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    color: var(--silver);
-    transition: color 0.2s;
-  }
-
-  .section-link:hover {
-    color: var(--white);
-  }
-
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
+  .divider-line {
+    flex: 1;
+    height: 1px;
     background: var(--border);
   }
 
+  .divider-link {
+    font-family: var(--font-head);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--silver);
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+
+  .divider-link:hover { color: var(--white); }
+
+  /* ─── POSTS ─── */
+  .posts { padding: 0; }
+
+  .posts-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
   .post-card {
-    background: var(--black);
-    display: block;
-    transition: background 0.2s;
-  }
-
-  .post-card:hover {
-    background: var(--card);
-  }
-
-  .post-card:hover .card-cta {
-    color: var(--red);
-  }
-
-  .card-inner {
+    display: grid;
+    grid-template-columns: 4rem 1fr 3rem;
+    align-items: center;
+    gap: 2rem;
     padding: 2rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+    position: relative;
   }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--red);
+    transition: width 0.25s ease;
+  }
+
+  .post-card:hover { background: var(--card); }
+  .post-card:hover::before { width: 3px; }
+
+  .post-card:hover .card-arrow {
+    color: var(--red);
+    transform: translateX(4px);
+  }
+
+  .card-number {
+    font-family: var(--font-head);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--border-2);
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .post-card:hover .card-number { color: var(--border-2); }
 
   .card-meta {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   .card-meta time {
     font-family: var(--font-head);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.1em;
     color: var(--muted);
   }
 
   .tag {
     font-family: var(--font-head);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
     color: var(--red);
-    border: 1px solid var(--red);
+    border: 1px solid rgba(213, 0, 28, 0.4);
     padding: 0.1rem 0.5rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .post-card:hover .tag {
+    border-color: var(--red);
+    background: var(--red-dim);
   }
 
   .card-title {
     font-family: var(--font-head);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--white);
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
   }
 
   .card-desc {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--silver);
     line-height: 1.6;
-    flex: 1;
   }
 
-  .card-cta {
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
+  .card-arrow {
     color: var(--muted);
-    transition: color 0.2s;
-    margin-top: auto;
+    transition: color 0.2s, transform 0.25s;
+    display: flex;
+    justify-content: flex-end;
   }
 
   @media (max-width: 768px) {
-    .post-grid {
-      grid-template-columns: 1fr;
-    }
-    .hero-title {
-      font-size: clamp(4rem, 20vw, 8rem);
-    }
+    .post-card { grid-template-columns: 3rem 1fr; }
+    .card-arrow { display: none; }
+    .hero-side-label { display: none; }
   }
 </style>

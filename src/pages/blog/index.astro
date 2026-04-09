@@ -5,130 +5,206 @@ import Layout from '../../layouts/Layout.astro';
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+
+function readingTime(body: string) {
+  const words = body.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
 ---
 
 <Layout title="BLOG">
   <main>
-    <section class="header">
-      <div class="inner">
-        <span class="eyebrow">JOURNAL</span>
-        <h1>BLOG</h1>
-        <p>{posts.length} POSTS</p>
+
+    <!-- ─── HEADER ─── -->
+    <section class="page-header">
+      <div class="header-inner">
+        <div class="header-meta">
+          <span class="eyebrow">JOURNAL</span>
+          <span class="post-count">{String(posts.length).padStart(2,'0')} POSTS</span>
+        </div>
+        <h1>BLOG<span class="title-accent">.</span></h1>
+        <p class="header-sub">Thoughts on engineering, tools, and the craft.</p>
       </div>
     </section>
 
+    <!-- ─── LIST ─── -->
     <section class="list">
-      <div class="inner">
+      <div class="list-inner">
         {posts.map((post, i) => (
           <a href={`/blog/${post.id}`} class="row">
-            <span class="num">{String(i + 1).padStart(2, '0')}</span>
-            <div class="row-content">
-              <h2>{post.data.title}</h2>
-              {post.data.description && <p>{post.data.description}</p>}
+            <span class="row-num">{String(i + 1).padStart(2, '0')}</span>
+            <div class="row-body">
+              <h2 class="row-title">{post.data.title}</h2>
+              {post.data.description && <p class="row-desc">{post.data.description}</p>}
+              {post.data.tags && (
+                <div class="row-tags">
+                  {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                </div>
+              )}
             </div>
             <div class="row-right">
-              {post.data.tags && post.data.tags.map(tag => (
-                <span class="tag">{tag}</span>
-              ))}
               <time>{post.data.date.toLocaleDateString('ko-KR')}</time>
-              <span class="arrow">→</span>
+              <span class="read-time">{readingTime(post.body ?? '')} MIN READ</span>
+              <span class="row-arrow">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 9H15M15 9L9 3M15 9L9 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
             </div>
           </a>
         ))}
       </div>
     </section>
+
   </main>
 </Layout>
 
 <style>
-  .header {
+  /* ─── HEADER ─── */
+  .page-header {
     border-bottom: 1px solid var(--border);
-    padding: 5rem 0 3rem;
+    padding: 5rem 2rem 3.5rem;
+    position: relative;
+    overflow: hidden;
   }
 
-  .inner {
-    max-width: 1200px;
+  .page-header::after {
+    content: 'BLOG';
+    position: absolute;
+    right: -0.05em;
+    bottom: -0.2em;
+    font-family: var(--font-head);
+    font-size: clamp(8rem, 22vw, 18rem);
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--border);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.04em;
+  }
+
+  .header-inner {
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .eyebrow {
     font-family: var(--font-head);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     letter-spacing: 0.3em;
     color: var(--red);
-    display: block;
-    margin-bottom: 1rem;
+  }
+
+  .post-count {
+    font-family: var(--font-head);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border-2);
   }
 
   h1 {
     font-family: var(--font-head);
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
     font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
     margin-bottom: 1rem;
   }
 
-  .header p {
-    font-family: var(--font-head);
-    font-size: 0.8rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
+  .title-accent { color: var(--red); }
+
+  .header-sub {
+    font-size: 0.9rem;
+    color: var(--silver);
+    line-height: 1.6;
   }
 
-  .list {
-    padding: 0 0 6rem;
-  }
+  /* ─── LIST ─── */
+  .list { flex: 1; }
 
-  .list .inner {
-    padding-top: 0;
+  .list-inner {
+    max-width: 1280px;
+    margin: 0 auto;
   }
 
   .row {
     display: grid;
-    grid-template-columns: 3rem 1fr auto;
+    grid-template-columns: 4rem 1fr 10rem;
     align-items: center;
     gap: 2rem;
-    padding: 2rem 0;
+    padding: 2rem;
     border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
+    position: relative;
+    transition: background 0.2s;
   }
 
-  .row:hover {
-    background: var(--card);
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin: 0 -1rem;
+  .row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: var(--red);
+    transition: width 0.25s ease;
   }
 
-  .row:hover .arrow {
-    color: var(--red);
-    transform: translateX(4px);
-  }
+  .row:hover { background: var(--card); }
+  .row:hover::before { width: 3px; }
+  .row:hover .row-arrow { color: var(--red); transform: translateX(4px); }
+  .row:hover .row-title { color: var(--white); }
 
-  .num {
+  .row-num {
     font-family: var(--font-head);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--border-2);
+    line-height: 1;
     align-self: start;
-    padding-top: 0.3rem;
+    padding-top: 0.4rem;
+    transition: color 0.2s;
   }
 
-  .row-content h2 {
+  .row-title {
     font-family: var(--font-head);
     font-size: 1.75rem;
     font-weight: 700;
-    line-height: 1.2;
-    color: var(--white);
-    margin-bottom: 0.5rem;
+    line-height: 1.15;
+    color: var(--light);
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
   }
 
-  .row-content p {
-    font-size: 0.875rem;
+  .row-desc {
+    font-size: 0.85rem;
     color: var(--silver);
-    line-height: 1.5;
+    line-height: 1.6;
+    margin-bottom: 0.6rem;
+  }
+
+  .row-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    color: var(--red);
+    border: 1px solid rgba(213, 0, 28, 0.35);
+    padding: 0.1rem 0.5rem;
   }
 
   .row-right {
@@ -136,37 +212,33 @@ const posts = (await getCollection('blog')).sort(
     flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
-    min-width: 120px;
+    align-self: start;
+    padding-top: 0.3rem;
   }
 
-  .tag {
+  .row-right time {
     font-family: var(--font-head);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    color: var(--red);
-    border: 1px solid var(--red);
-    padding: 0.15rem 0.5rem;
-  }
-
-  time {
-    font-family: var(--font-head);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.08em;
     color: var(--muted);
   }
 
-  .arrow {
-    font-size: 1rem;
+  .read-time {
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
     color: var(--muted);
-    transition: color 0.2s, transform 0.2s;
   }
 
-  @media (max-width: 600px) {
-    .row {
-      grid-template-columns: 2rem 1fr;
-    }
-    .row-right {
-      display: none;
-    }
+  .row-arrow {
+    color: var(--muted);
+    transition: color 0.2s, transform 0.25s;
+    display: flex;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .row { grid-template-columns: 3rem 1fr; }
+    .row-right { display: none; }
   }
 </style>
